@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { fieldArraySchema } from "./ValidationSchema";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const emptyDonation = { institution: "", percentage: 0 };
 
@@ -24,9 +26,9 @@ type FormValues = {
 
 const FieldArray = () => {
   const {
-    register,
     control,
     formState: { isSubmitted, isSubmitting, errors },
+    handleSubmit,
   } = useForm<FormValues>({
     defaultValues: {
       fullName: "",
@@ -34,6 +36,7 @@ const FieldArray = () => {
       termsAndConditions: false,
       donations: [emptyDonation],
     },
+    resolver: yupResolver(fieldArraySchema),
   });
 
   const { fields, remove, append } = useFieldArray({
@@ -41,10 +44,15 @@ const FieldArray = () => {
     control,
   });
 
+  async function onSubmit(data: FormValues) {
+    console.log("data", data);
+    return new Promise((res) => setTimeout(res, 2500));
+  }
+  console.log("errors", errors);
   return (
     <Card>
       <CardContent>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container direction="column" spacing={2}>
             <Grid item>
               <Controller
@@ -70,6 +78,7 @@ const FieldArray = () => {
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    type="number"
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">$</InputAdornment>
@@ -96,7 +105,7 @@ const FieldArray = () => {
                 spacing={2}
                 alignItems="center"
               >
-                <Grid container item spacing={2} xs={12} sm={11} key={field.id}>
+                <Grid container item spacing={2} xs={12} sm={10} key={field.id}>
                   <Grid item xs={12} sm={6}>
                     <Controller
                       name={`donations.${i}.institution` as const}
@@ -129,7 +138,7 @@ const FieldArray = () => {
                     />
                   </Grid>
                 </Grid>
-                <Grid item xs={12} sm="auto">
+                <Grid item xs={12} sm={1}>
                   <Button
                     disabled={isSubmitted || isSubmitting}
                     onClick={() => remove(i)}
@@ -143,6 +152,7 @@ const FieldArray = () => {
             <Grid item>
               <Button
                 type="button"
+                disabled={isSubmitting || isSubmitted}
                 variant="contained"
                 onClick={() => append(emptyDonation)}
               >
@@ -157,7 +167,17 @@ const FieldArray = () => {
                   <FormControlLabel
                     {...field}
                     control={<Checkbox />}
-                    label="I accept terms and conditions"
+                    label={
+                      <Typography
+                        color={
+                          errors.termsAndConditions?.message
+                            ? "error"
+                            : "default"
+                        }
+                      >
+                        I accept terms and conditions
+                      </Typography>
+                    }
                   />
                 )}
               ></Controller>
@@ -172,11 +192,7 @@ const FieldArray = () => {
                   isSubmitting ? <CircularProgress size="0.9rem" /> : undefined
                 }
               >
-                {isSubmitting
-                  ? "Submitting"
-                  : isSubmitted
-                  ? "Submited"
-                  : "Submit"}
+                {isSubmitting ? "Submitting" : "Submit"}
               </Button>
             </Grid>
           </Grid>
