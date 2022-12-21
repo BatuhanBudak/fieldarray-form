@@ -115,8 +115,10 @@ const FieldArray = () => {
                           {...field}
                           label="Institution"
                           fullWidth
-                          error={!!errors.donations?.root?.message}
-                          helperText={errors.donations?.root?.message ?? ""}
+                          error={!!errors.donations?.[0]?.institution?.message}
+                          helperText={
+                            errors.donations?.[0]?.institution?.message ?? ""
+                          }
                         />
                       )}
                     />
@@ -131,8 +133,10 @@ const FieldArray = () => {
                           {...field}
                           label="Percentage (%)"
                           fullWidth
-                          error={!!errors.donations?.root?.message}
-                          helperText={errors.donations?.root?.message ?? ""}
+                          error={!!errors.donations?.[0]?.percentage?.message}
+                          helperText={
+                            errors.donations?.[0]?.percentage?.message ?? ""
+                          }
                         />
                       )}
                     />
@@ -197,6 +201,7 @@ const FieldArray = () => {
             </Grid>
           </Grid>
         </form>
+        <p>{errors.donations?.root?.message}</p>
       </CardContent>
     </Card>
   );
