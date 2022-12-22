@@ -104,6 +104,7 @@ const FieldArray = ({ onSubmit }: FieldArrayFormProps) => {
                       render={({ field }) => (
                         <TextField
                           {...field}
+                          data-testid={`donations.${i}.institution`}
                           label="Institution"
                           fullWidth
                           error={!!errors.donations?.[0]?.institution?.message}
@@ -123,6 +124,7 @@ const FieldArray = ({ onSubmit }: FieldArrayFormProps) => {
                         <TextField
                           {...field}
                           label="Percentage (%)"
+                          data-testid={`donations.${i}.percentage`}
                           fullWidth
                           error={!!errors.donations?.[0]?.percentage?.message}
                           helperText={
@@ -135,6 +137,7 @@ const FieldArray = ({ onSubmit }: FieldArrayFormProps) => {
                 </Grid>
                 <Grid item xs={12} sm={1}>
                   <Button
+                    data-testid={`donations.${i}.delete`}
                     disabled={isSubmitted || isSubmitting}
                     onClick={() => remove(i)}
                   >
@@ -198,9 +201,9 @@ const FieldArray = ({ onSubmit }: FieldArrayFormProps) => {
               </Button>
             </Grid>
           </Grid>
-          <Box marginTop={2}>
+          {/* <Box marginTop={2}>
             <pre>{JSON.stringify({ values, errors }, null, 4)}</pre>
-          </Box>
+          </Box> */}
         </form>
       </CardContent>
     </Card>

@@ -1,5 +1,5 @@
 import { Inter } from "@next/font/google";
-import FieldArray from "../src/components/FieldArray";
+import FieldArray from "../src/components/FieldArray/FieldArray";
 
 const inter = Inter({ subsets: ["latin"] });
 

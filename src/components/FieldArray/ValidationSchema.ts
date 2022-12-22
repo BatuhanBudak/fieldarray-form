@@ -20,7 +20,7 @@ export const fieldArraySchema = yup.object().shape({
 
     .min(1, "You need to provide at least 1 instution")
     .max(3, "You can provide 3 instutions at max")
-    .test((donations, ctx) => {
+    .test((donations) => {
       const sum = donations?.reduce(
         (acc, curr) => acc + (curr.percentage || 0),
         0

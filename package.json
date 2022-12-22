@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest --watch",
+    "jest-preview": "jest-preview"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -27,9 +29,12 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@testing-library/dom": "^8.19.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "jest": "^29.3.1",
-    "jest-environment-jsdom": "^29.3.1"
+    "jest-environment-jsdom": "^29.3.1",
+    "jest-preview": "^0.3.1"
   }
 }
