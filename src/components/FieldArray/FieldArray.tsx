@@ -137,6 +137,7 @@ const FieldArray = ({ onSubmit }: FieldArrayFormProps) => {
                 </Grid>
                 <Grid item xs={12} sm={1}>
                   <Button
+                    type="button"
                     data-testid={`donations.${i}.delete`}
                     disabled={isSubmitted || isSubmitting}
                     onClick={() => remove(i)}

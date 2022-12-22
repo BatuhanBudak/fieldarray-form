@@ -1,14 +1,7 @@
-import {
-  screen,
-  waitFor,
-  render,
-  act,
-  prettyDOM,
-} from "@testing-library/react";
+import { screen, waitFor, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import FieldArray from "../../src/components/FieldArray/FieldArray";
 import { FormValues } from "../../src/components/FieldArray/FieldArrayTypes";
-import preview from "jest-preview";
 
 const onSubmit = jest.fn((data: FormValues) => {
   return Promise.resolve(data);
@@ -17,14 +10,14 @@ const onSubmit = jest.fn((data: FormValues) => {
 describe("Fieldarray form", () => {
   const fullName = "Batuhan";
   const donationAmount = "100";
-  const institution = "Red Cross";
+  const institutionName = "Red Cross";
   const donationPercentage = "100";
   const user = userEvent.setup();
   beforeEach(() => {
     onSubmit.mockClear();
     render(<FieldArray onSubmit={onSubmit} />);
   });
-  afterEach(() => onSubmit.mockClear);
+
   test("All fields are in the document", () => {
     expect(getFullName()).toBeInTheDocument();
     expect(getDonationAmount()).toBeInTheDocument();
@@ -36,10 +29,6 @@ describe("Fieldarray form", () => {
     expect(getCheckbox()).toBeInTheDocument();
   });
   test("Fullname field shows error if it's blank when submitting", async () => {
-    await user.type(getDonationAmount(), donationAmount);
-    await user.type(getInstitutionByIndex(0), institution);
-    await user.type(getPercentageByIndex(0), donationPercentage);
-    await user.click(getCheckbox());
     await user.click(getSubmitButton());
     await waitFor(() => {
       expect(screen.getByText(/Your name is required/i)).toBeInTheDocument();
@@ -47,10 +36,6 @@ describe("Fieldarray form", () => {
   });
 
   test("Donation amount field shows error if it's blank when submitting", async () => {
-    await user.type(getFullName(), fullName);
-    await user.type(getInstitutionByIndex(0), institution);
-    await user.type(getPercentageByIndex(0), donationPercentage);
-    await user.click(getCheckbox());
     await user.click(getSubmitButton());
     await waitFor(() => {
       expect(
@@ -60,10 +45,6 @@ describe("Fieldarray form", () => {
   });
 
   test("Institution field shows error if it's blank when submitting", async () => {
-    await user.type(getFullName(), fullName);
-    await user.type(getDonationAmount(), donationAmount);
-    await user.type(getPercentageByIndex(0), donationPercentage);
-    await user.click(getCheckbox());
     await user.click(getSubmitButton());
     await waitFor(() => {
       expect(
@@ -73,10 +54,6 @@ describe("Fieldarray form", () => {
   });
 
   test("Percentage field shows error if it's blank when submitting", async () => {
-    await user.type(getFullName(), fullName);
-    await user.type(getDonationAmount(), donationAmount);
-    await user.type(getInstitutionByIndex(0), institution);
-    await user.click(getCheckbox());
     await user.click(getSubmitButton());
     await waitFor(() => {
       expect(
@@ -88,37 +65,46 @@ describe("Fieldarray form", () => {
   test("onSubmit is called when all fields pass validation", async () => {
     await user.type(getFullName(), fullName);
     await user.type(getDonationAmount(), donationAmount);
-    const inst = screen.getByRole("textbox", {
-      name: /donations.0.institution/i,
+    const institution = screen.getByRole("textbox", {
+      name: /institution/i,
     });
-    const perce = await screen.findByTestId("donations.0.percentage");
-    await user.type(inst, "institution");
-    await user.type(perce, donationPercentage);
+    const percentage = screen.getByRole("textbox", {
+      name: /percentage/i,
+    });
+
+    await user.type(institution, institutionName);
+    await user.type(percentage, donationPercentage);
     await user.click(getCheckbox());
     await user.click(getSubmitButton());
 
-    preview.debug();
     await waitFor(() => {
-      expect(onSubmit).toHaveBeenCalled();
-      expect(onSubmit).toHaveBeenCalledWith({
-        fullName,
-        donationAmount,
-        donations: [{ institution, donationPercentage }],
+      expect(onSubmit).toHaveBeenCalledTimes(1);
+      const functionArg = onSubmit.mock.calls[0][0];
 
+      expect(functionArg).toMatchObject({
+        fullName,
+        donationAmount: 100,
+        donations: [{ institution: institutionName, percentage: 100 }],
         termsAndConditions: true,
       });
-      // expect(onSubmit).toHaveBeenCalledTimes(1);
+
+      expect(functionArg).toEqual({
+        fullName,
+        donationAmount: 100,
+        donations: [{ institution: institutionName, percentage: 100 }],
+        termsAndConditions: true,
+      });
     });
   });
-  test.only("inst in document", async () => {
-    const inst = screen.getByTestId(/donations.0.institution/i);
-    expect(inst).toBeInTheDocument();
-    await user.type(inst, institution);
-    await waitFor(() => {
-      expect(inst).toHaveValue(institution);
-    });
-    preview.debug();
-  });
+  // test.only("inst in document", async () => {
+  //   const inst = screen.getByTestId(/donations.0.institution/i);
+  //   expect(inst).toBeInTheDocument();
+  //   await user.type(inst, institution);
+  //   await waitFor(() => {
+  //     expect(inst).toHaveValue(institution);
+  //   });
+  //   preview.debug();
+  // });
 });
 
 const getFullName = () => {
