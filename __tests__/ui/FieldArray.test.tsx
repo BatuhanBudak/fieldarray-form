@@ -96,15 +96,6 @@ describe("Fieldarray form", () => {
       });
     });
   });
-  // test.only("inst in document", async () => {
-  //   const inst = screen.getByTestId(/donations.0.institution/i);
-  //   expect(inst).toBeInTheDocument();
-  //   await user.type(inst, institution);
-  //   await waitFor(() => {
-  //     expect(inst).toHaveValue(institution);
-  //   });
-  //   preview.debug();
-  // });
 });
 
 const getFullName = () => {
