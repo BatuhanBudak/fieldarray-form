@@ -15,17 +15,10 @@ import React from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { fieldArraySchema } from "./ValidationSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FieldArrayFormProps, FormValues } from "./FieldArrayTypes";
+import { emptyDonation } from "./emptyDonation";
 
-const emptyDonation = { institution: "", percentage: 0 };
-
-type FormValues = {
-  fullName: string;
-  donationAmount: number;
-  termsAndConditions: boolean;
-  donations: typeof emptyDonation[];
-};
-
-const FieldArray = () => {
+const FieldArray = ({ onSubmit }: FieldArrayFormProps) => {
   const {
     watch,
     control,
@@ -47,11 +40,6 @@ const FieldArray = () => {
   });
   const values = watch();
 
-  async function onSubmit(data: FormValues) {
-    console.log("data", data);
-    return new Promise((res) => setTimeout(res, 2500));
-  }
-  console.log("errors", errors);
   return (
     <Card>
       <CardContent>
