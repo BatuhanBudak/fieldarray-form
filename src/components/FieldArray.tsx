@@ -9,6 +9,7 @@ import {
   InputAdornment,
   FormControlLabel,
   Checkbox,
+  Box,
 } from "@mui/material";
 import React from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
@@ -26,6 +27,7 @@ type FormValues = {
 
 const FieldArray = () => {
   const {
+    watch,
     control,
     formState: { isSubmitted, isSubmitting, errors },
     handleSubmit,
@@ -43,6 +45,7 @@ const FieldArray = () => {
     name: "donations",
     control,
   });
+  const values = watch();
 
   async function onSubmit(data: FormValues) {
     console.log("data", data);
@@ -152,6 +155,13 @@ const FieldArray = () => {
                 </Grid>
               </Grid>
             ))}
+            <Grid item>
+              {errors.donations?.[1] && (
+                <Typography color="error">
+                  {errors.donations?.[1].message}
+                </Typography>
+              )}
+            </Grid>
 
             <Grid item>
               <Button
@@ -200,8 +210,10 @@ const FieldArray = () => {
               </Button>
             </Grid>
           </Grid>
+          <Box marginTop={2}>
+            <pre>{JSON.stringify({ values, errors }, null, 4)}</pre>
+          </Box>
         </form>
-        <p>{errors.donations?.root?.message}</p>
       </CardContent>
     </Card>
   );

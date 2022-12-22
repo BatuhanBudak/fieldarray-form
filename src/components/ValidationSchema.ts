@@ -17,6 +17,25 @@ export const fieldArraySchema = yup.object().shape({
   termsAndConditions: yup.boolean().required().isTrue(),
   donations: yup
     .array()
+
+    .min(1, "You need to provide at least 1 instution")
+    .max(3, "You can provide 3 instutions at max")
+    .test((donations, ctx) => {
+      const sum = donations?.reduce(
+        (acc, curr) => acc + (curr.percentage || 0),
+        0
+      );
+
+      if (sum !== 100) {
+        return new yup.ValidationError(
+          `Percentage should be 100%, but you have ${sum}%`,
+          undefined,
+          "donations[1]"
+        );
+      }
+
+      return true;
+    })
     .of(
       yup.object().shape({
         institution: yup
@@ -30,24 +49,5 @@ export const fieldArraySchema = yup.object().shape({
           .min(1, "Percentage needs to be at least 1%")
           .max(100, "Percentage can be at most 100%"),
       })
-    )
-    .min(1, "You need to provide at least 1 instution")
-    .max(3, "You can provide 3 instutions at max")
-    .test((donations, ctx) => {
-      const sum = donations?.reduce(
-        (acc, curr) => acc + (curr.percentage || 0),
-        0
-      );
-
-      if (sum !== 100) {
-        return new yup.ValidationError(
-          `Percentage should be 100%, but you have ${sum}%`,
-          undefined,
-          "donations.donations"
-        );
-        // return ctx.createError({ message: "SKU missing correct prefix" });
-      }
-
-      return true;
-    }),
+    ),
 });
